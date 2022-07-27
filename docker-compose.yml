@@ -1,0 +1,32 @@
+version: "1.0"
+services:
+  mongodb-service:
+    image: "mongo"
+    ports:
+      - "27017:27017"
+  seller-service:
+    build: ./backend/Seller
+    environment:
+      PORT: 3001
+      MONGO_DB_URI: "mongodb://mongodb-service:27017/local"
+    volumes:
+      - "./backend/models:/code/src/models"
+    ports:
+      - "3001:3001"
+  buyer-service:
+    build: ./backend/Buyer
+    environment:
+      PORT: 3002
+      MONGO_DB_URI: "mongodb://mongodb-service:27017/local"
+    volumes:
+      - "./backend/models:/code/src/models"
+    ports:
+      - "3002:3002"
+  nginx-frontend:
+    restart: always
+    build: ./frontend/
+    depends_on:
+      - seller-service
+      - buyer-service
+    ports:
+      - "8080:80"
