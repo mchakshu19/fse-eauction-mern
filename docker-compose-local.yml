@@ -1,0 +1,67 @@
+services:
+  mongodb-service:
+    image: "mongo"
+    container_name: mongodb-service
+    ports:
+      - "27017:27017"
+  seller-service:
+    build: ./backend/Seller
+    image: eauctionfse3.azurecr.io/seller-service:latest
+    container_name: seller-service
+    depends_on:
+      - mongodb-service
+    restart: always
+    environment:
+      PORT: 3001
+      MONGO_DB_URI: "mongodb://mongodb-service:27017/local"
+    ports:
+      - "3001:3001"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 4g
+        reservations:
+          cpus: "0.25"
+          memory: 2g
+  buyer-service:
+    build: ./backend/Buyer
+    image: eauctionfse3.azurecr.io/buyer-service:latest
+    container_name: buyer-service
+    depends_on:
+      - mongodb-service
+    restart: always
+    environment:
+      PORT: 3002
+      MONGO_DB_URI: "mongodb://mongodb-service:27017/local"
+    ports:
+      - "3002:3002"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 4g
+        reservations:
+          cpus: "0.25"
+          memory: 2g
+  nginx-frontend:
+    restart: always
+    build: ./frontend/
+    image: eauctionfse3.azurecr.io/nginx-frontend:latest
+    container_name: nginx-frontend
+    depends_on:
+      - seller-service
+      - buyer-service
+    environment:
+      SELLER_API_HOST: seller-service:3001
+      BUYER_API_HOST: buyer-service:3002
+    ports:
+      - "8080:80"
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 4g
+        reservations:
+          cpus: "1"
+          memory: 2g

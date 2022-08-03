@@ -12,7 +12,6 @@ const sendRequest = ({
     data = null,
 }) => {
     let requestOptions = {
-        url: 'http://localhost:8080',
         method,
         headers: {
             ...headers,
@@ -25,7 +24,7 @@ const sendRequest = ({
             body: JSON.stringify(data)
         };
     }
-    return fetch(`http://localhost:8080${url}`, requestOptions)
+    return fetch(url, requestOptions)
     .then((res) => res.json())
     .then((res) => { console.log(res); return res; })
     .catch((err) => {

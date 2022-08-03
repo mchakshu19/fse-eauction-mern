@@ -12,8 +12,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors());
-console.log(process.env.MONGO_DB_URI);
-console.log(process.env.PORT);
 
 mongoose.connect(process.env.MONGO_DB_URI).then(() => {
 	console.log('DB connected');

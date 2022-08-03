@@ -1,13 +1,9 @@
-# upstream frontend {
-#     server frontend:3000;
-# }
-
 upstream seller {
-    server seller-service:3001;
+    server ${SELLER_API_HOST};
 }
 
 upstream buyer {
-    server buyer-service:3002;
+    server ${BUYER_API_HOST};
 }
 
 server {

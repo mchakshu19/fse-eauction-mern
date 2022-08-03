@@ -18,8 +18,8 @@ RUN npm run build
 # stage 2
 FROM nginx
 
-ADD ./nginx/ /etc/nginx/conf.d/
+COPY ./nginx/ /etc/nginx/templates/
 COPY --from=builder /code/dist /usr/share/nginx/html
 
-EXPOSE 8080
+EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
